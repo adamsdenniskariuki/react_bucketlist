@@ -1,4 +1,10 @@
 import React, { Component } from 'react';
+import { 
+    Container,
+    Header, 
+    Label, 
+    Button, 
+    Form } from 'semantic-ui-react'
 
 var axios = require('axios');
 
@@ -39,14 +45,18 @@ class AddBucketlist extends Component {
   render() {
     return (
       <div>
-        <h3>Add Bucket list</h3>
-        <form onSubmit={this.handleSubmit.bind(this)}>
+        <Container fluid style={
+            {'float':'left', 'width': '49%', 'marginTop': '5%', 'padding': '10px', 'border': '1px solid #e8e8e8'}}>
+        <Header as="h3">Add Bucket list</Header>
+        <Form onSubmit={this.handleSubmit.bind(this)}>
             <div>
-                 <label>Name </label>
-                 <input type="text" ref="name" />
-                 <input type="submit" value="Submit" />
+                <Form.Field>
+                 <input style={{"width":"70%", "marginRight":"10px"}} type="text" ref="name" placeholder="New Bucket list..." />
+                 <Button primary type="submit">Submit</Button>
+                </Form.Field>
             </div><br />
-        </form>
+        </Form>
+        </Container>
       </div>
     );
   }

@@ -1,5 +1,13 @@
 import React, { Component } from 'react';
 import { Link, Redirect } from 'react-router-dom'
+import { 
+    Container,
+    Header, 
+    Input, 
+    Label, 
+    Divider,
+    Button, 
+    Form } from 'semantic-ui-react'
 
 var axios = require('axios');
 
@@ -75,18 +83,29 @@ class RegisterContainer extends Component {
 
     return (
       <div className="Register">
-          <h3>Register</h3>
-          <form onSubmit={this.handleRegister.bind(this)}>
+          <Container fluid style={
+              {'width': '40%', 'marginTop': '5%', 'padding': '50px', 'border': '1px solid #e8e8e8'}}>
+            <Header as="h3">Register</Header>
+          <Form onSubmit={this.handleRegister.bind(this)}>
             <div>
-                <label>Name</label><br />
-                 <input type="text" ref="name" /><br />
-                 <label>Email</label><br />
-                 <input type="text" ref="email" /><br />
-                 <label>Password</label><br />
-                 <input type="password" ref="password" /><br />
+                <Form.Field>
+                 <input style={{'width':'100%'}} placeholder='Name...' type="text" ref="name" /><br />
+                 <Label pointing>Name</Label><br />
+                </Form.Field>
+                <Divider /><br />
+                <Form.Field>
+                 <input style={{'width':'100%'}} placeholder='Email...' type="text" ref="email" /><br />
+                 <Label pointing>Email</Label><br />
+                </Form.Field>
+                <Divider /><br />
+                 <Form.Field>
+                    <input style={{'width':'100%'}} placeholder='Password...' type="password" ref="password" /><br />
+                    <Label pointing>Password</Label><br />
+                 </Form.Field>
             </div><br />
-            <input type="submit" value="Submit" /> <Link to="/login"> Login</Link><br />
-        </form>
+            <Button primary type="submit">Submit</Button> <Link to="/login"> Already Registered? Login</Link><br />
+        </Form>
+        </Container>
       </div>
     );
   }

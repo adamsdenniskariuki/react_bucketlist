@@ -20,7 +20,6 @@ deleteBucketlist(id){
         }
     return (
       <div className="Bucketlists">
-          <h3>Bucket lists </h3>
         {allbucketlists}
       </div>
     );

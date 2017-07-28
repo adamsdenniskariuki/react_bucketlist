@@ -1,5 +1,13 @@
 import React, { Component } from 'react';
 import { Link, Redirect } from 'react-router-dom'
+import { 
+    Container,
+    Header, 
+    Input, 
+    Label, 
+    Divider,
+    Button, 
+    Form } from 'semantic-ui-react'
 
 var axios = require('axios');
 
@@ -62,7 +70,7 @@ class LoginContainer extends Component {
 
   render() {
     
-    const { redirectToHome } = this.state 
+    const { redirectToHome } = this.state
 
     if(redirectToHome){
         return (<Redirect to="/" />)
@@ -76,16 +84,24 @@ class LoginContainer extends Component {
 
     return (
       <div className="Login">
-          <h3>Login</h3>
-          <form onSubmit={this.handleLogin.bind(this)}>
-            <div>
-                 <label>Email</label><br />
-                 <input type="text" ref="email" /><br />
-                 <label>Password</label><br />
-                 <input type="password" ref="password" /><br />
-            </div><br />
-            <input type="submit" value="Submit" /> <Link to="/register"> Register</Link><br />
-        </form>
+          <Container fluid style={
+              {'width': '40%', 'marginTop': '5%', 'padding': '50px', 'border': '1px solid #e8e8e8'}}>
+            <Header as="h3">Login</Header>
+            <Form onSubmit={this.handleLogin.bind(this)}>
+                <div>
+                    <Form.Field>
+                        <input style={{'width':'100%'}} placeholder='Email...' type="text" ref="email" /><br />
+                        <Label pointing>Email</Label><br />
+                    </Form.Field>
+                    <Divider /><br />
+                    <Form.Field>
+                        <input style={{'width':'100%'}} placeholder='Password...' type="password" ref="password" /><br />
+                        <Label pointing>Password</Label><br />
+                    </Form.Field>
+                </div><br />
+                <Button primary type="submit">Submit</Button><Link to="/register"> Register</Link><br />
+            </Form>
+        </Container>
       </div>
     );
   }

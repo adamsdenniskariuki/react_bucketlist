@@ -92,10 +92,12 @@ class App extends Component {
 
       return (
 
-        <div className="App">
+        <div className="App" style={{'width':'100%', 'padding': '10px'}}>
           <Logout />
+          <div style={{'width':'100%', 'paddingLeft':'10px', 'paddingRight':'18%'}}>
           <AddBucketlist addBucketlist={this.handleAddBucketlist.bind(this)}/>
           <SearchBucketlists />
+          </div>
           <Bucketlists bucketlists={this.state.bucketlists} onDelete={this.handleDeleteBucketlist.bind(this)}/>
         </div>
       );

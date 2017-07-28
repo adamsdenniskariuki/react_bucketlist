@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
+import {Card, Icon} from 'semantic-ui-react';
 
 class BucketlistData extends Component {
   
@@ -10,9 +11,15 @@ class BucketlistData extends Component {
   
   render() {
     return (
-      <li className="Bucketlists">
-        <strong>{this.props.bucketlist.name}</strong> - {this.props.bucketlist.name} <Link onClick={this.deleteBucketlist.bind(this, this.props.bucketlist.id)} to="/">X</Link>
-      </li>
+      <div className="Bucketlists">
+        <Card style={{'width': '40%', 'float': 'left', 'margin': '10px'}}>
+          <Card.Content extra>
+            {this.props.bucketlist.name} <Link style={{'color':'blue'}} to="/"> Edit</Link> <Link style={{'color':'blue'}} onClick={this.deleteBucketlist.bind(this, this.props.bucketlist.id)} to="/"> Delete</Link> <br />
+            Date Created: {this.props.bucketlist.date_created}<br />
+            <Link style={{'color':'blue'}} to="/">Add Item</Link> <br />
+          </Card.Content>
+        </Card>
+      </div>
     );
   }
 }
