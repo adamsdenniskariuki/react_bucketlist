@@ -1,25 +1,15 @@
 import React, { Component } from 'react';
 import { 
     Container,
-    Header, 
-    Label, 
+    Header,  
     Button, 
     Form } from 'semantic-ui-react'
+import {connect} from 'react-redux'
+import * as actionTypes from '../Actions/ActionTypes';
 
 var axios = require('axios');
 
 class AddBucketlist extends Component {
-
-    constructor(){
-        super();
-        this.state = {
-            newBucketlist: {}
-        }
-    }
-
-    static defaultProps = {
-
-    }
 
     handleSubmit(e){
         if(this.refs.name.value === ''){
@@ -30,9 +20,8 @@ class AddBucketlist extends Component {
             {headers: {'Authorization':'Bearer ' + localStorage.getItem('login_token')}})
             .then( (response) => {
                 if(response.data['messages'] === 'create_success'){
-                    this.setState({newBucketlist: response.data.bucketlists}, function(){
-                        this.props.addBucketlist(this.state.newBucketlist)
-                    })
+                    this.props.setNewBucket(response.data.bucketlists)
+                    this.props.addBucketlist(this.props.bucket.bucketlists)
                     alert('Bucket list successfully created');
                 }else{
                     alert(response.data['messages'])
@@ -62,4 +51,22 @@ class AddBucketlist extends Component {
   }
 }
 
-export default AddBucketlist;
+
+const mapStateToProps = (state) => {
+    return {
+        bucket: state.bucketListReducer
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        setNewBucket: (newbucket) => {
+            dispatch({
+                type: actionTypes.NEW_BUCKET,
+                payload: newbucket
+            })
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddBucketlist);

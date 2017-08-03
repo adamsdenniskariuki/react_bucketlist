@@ -2,15 +2,15 @@ import React from 'react';
 import ReactDOM from 'react-dom'; 
 import registerServiceWorker from './registerServiceWorker';
 import Routes from './Routes';
-import { BrowserRouter } from 'react-router-dom'
-import injectTapEventPlugin from 'react-tap-event-plugin';
 import 'semantic-ui-css/semantic.min.css';
+import {Provider} from 'react-redux';
+import store from './Store';
 
-// injectTapEventPlugin();
 
 ReactDOM.render(
-<BrowserRouter>
+<Provider store={store}>
     <Routes />
-</BrowserRouter>
+</Provider>
 , document.getElementById('root'));
 registerServiceWorker();
+

@@ -2,34 +2,17 @@ import React, { Component } from 'react';
 import { Link, Redirect } from 'react-router-dom'
 import { 
     Container,
-    Header, 
-    Input, 
+    Header,  
     Label, 
     Divider,
     Button, 
     Form } from 'semantic-ui-react'
+import {connect} from 'react-redux'
+import * as actionTypes from '../Actions/ActionTypes';
 
 var axios = require('axios');
 
 class LoginContainer extends Component {
-
-  constructor(){
-    super();
-    this.state = {
-        user: {},
-        redirectToHome: false
-    }
-
-  }
-
-
-  componentWillMount(){
-
-  }
-
-  componentDidMount(){
-    
-  }
 
   doLogin(user){
     axios.post('http://localhost:5555/api/v1/auth/login/', user, {
@@ -38,12 +21,16 @@ class LoginContainer extends Component {
         if(response.status === 200 && response.data['messages'] === "login_success"){
             localStorage.setItem('login_status', '1');
             localStorage.setItem('login_token', response.data['user_token']);
-            this.setState({redirectToHome: true});
+            this.props.setUser({
+                "email": user['email'],
+                "password": user['password']
+            });
+            this.props.setRedirect(true)
         }
         else{
             localStorage.setItem('login_status', '0');
             localStorage.setItem('login_token', '');
-            this.setState({redirectToHome: false});
+            this.props.setRedirect(false)
             alert(response.data['messages']);
         }
     })
@@ -56,23 +43,17 @@ class LoginContainer extends Component {
       if(this.refs.email.value === '' || this.refs.password.value === ''){
             alert('Please fill in the email and password')
         }else{
-            this.setState({user: {
+            this.doLogin({
                 "email": this.refs.email.value,
-                "password": this.refs.password.value
-                
-            }}, function(){
-                // console.log(this.state)
-                this.doLogin(this.state.user)
+                "password": this.refs.password.value 
             })
         }
         e.preventDefault()
   }
 
   render() {
-    
-    const { redirectToHome } = this.state
 
-    if(redirectToHome){
+    if(this.props.user.redirectToHome){
         return (<Redirect to="/" />)
     }
 
@@ -107,4 +88,27 @@ class LoginContainer extends Component {
   }
 }
 
-export default LoginContainer;
+const mapStateToProps = (state) => {
+    return {
+        user: state.userReducer
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        setUser: (user) => {
+            dispatch({
+                type: actionTypes.LOGIN_USER,
+                payload: user
+            })
+        },
+        setRedirect: (redirect) => {
+            dispatch({
+                type: actionTypes.LOGIN_REDIRECT,
+                payload: redirect
+            })
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(LoginContainer)

@@ -2,22 +2,30 @@ import React, { Component } from 'react';
 import { 
     Container,
     Header, 
-    Label, 
     Button, 
     Form } from 'semantic-ui-react'
+import {connect} from 'react-redux'
+import * as actionTypes from '../Actions/ActionTypes';
+
+var axios = require('axios');
 
 class SearchBucketlists extends Component {
 
-    static defaultProps = {
-
-    }
-
     handleSubmit(e){
-        if(this.refs.search.value === '' && this.refs.limit.value === ''){
-            alert('search value is required')
-        }else{
-            
-        }
+
+        let limit = 0;
+        this.refs.limit.value.replace(" ", "").length === 0 ? limit = 10 : limit = this.refs.limit.value
+        axios.get('http://localhost:5555/api/v1/bucketlists?q=' + this.refs.search.value + '&limit=' + limit,
+        {headers: {'Authorization':'Bearer ' + localStorage.getItem('login_token')}})
+        .then( (response) => {
+            if(response.data['messages'] === 'list_success'){
+                this.props.setSearchBuckets(response.data.bucketlists)
+                this.props.searchBucketlist(this.props.bucket.bucketlists)
+            }else{
+                alert(response.data['messages'])
+            }
+        })
+        
         e.preventDefault()
     }
 
@@ -29,8 +37,8 @@ class SearchBucketlists extends Component {
         <Header as="h3">Search Bucket lists</Header>
         <Form onSubmit={this.handleSubmit.bind(this)}>
             <div>
-                 <input style={{"width":"30%", "marginRight":"10px"}} type="text" ref="search" placeholder="Search..." />
-                 <input style={{"width":"30%", "marginRight":"10px"}} type="text" ref="limit" placeholder="Limit..."  />
+                 <input onKeyUp={this.handleSubmit.bind(this)} style={{"width":"30%", "marginRight":"10px"}} type="text" ref="search" placeholder="Search..." />
+                 <input onKeyUp={this.handleSubmit.bind(this)} style={{"width":"30%", "marginRight":"10px"}} type="text" ref="limit" placeholder="Limit..."  />
                  <Button primary type="submit">Submit</Button>
             </div><br />
         </Form>
@@ -40,4 +48,21 @@ class SearchBucketlists extends Component {
   }
 }
 
-export default SearchBucketlists;
+const mapStateToProps = (state) => {
+    return {
+        bucket: state.bucketListReducer
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        setSearchBuckets: (buckets) => {
+            dispatch({
+                type: actionTypes.LIST_BUCKETS,
+                payload: buckets
+            })
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SearchBucketlists);

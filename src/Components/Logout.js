@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom'
+import {connect} from 'react-redux'
+import * as actionTypes from '../Actions/ActionTypes';
 
 class LogOut extends Component {
 
+
   componentWillMount(){
-
-  }
-
-  componentDidMount(){
-
+    this.props.setRedirect(false)
   }
 
   logoutUser(){
@@ -25,4 +24,21 @@ class LogOut extends Component {
   }
 }
 
-export default LogOut;
+const mapStateToProps = (state) => {
+    return {
+        user: state.userReducer
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        setRedirect: (redirect) => {
+            dispatch({
+                type: actionTypes.LOGIN_REDIRECT,
+                payload: redirect
+            })
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(LogOut);

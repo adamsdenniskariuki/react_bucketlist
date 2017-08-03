@@ -4,19 +4,13 @@ import AddBucketlist from './Components/AddBucketlist';
 import SearchBucketlists from './Components/SearchBucketlists';
 import Logout from './Components/Logout';
 import { Redirect } from 'react-router-dom'
+import {connect} from 'react-redux'
+import * as actionTypes from './Actions/ActionTypes';
 import './App.css';
 
 var axios = require('axios');
 
 class App extends Component {
-
-  constructor(){
-    super();
-    this.state = {
-      bucketlists: [],
-      loginRequired: false
-    }
-  }
 
   getBucketlistsFromAPI(){
     var login_token = localStorage.getItem('login_token');
@@ -26,9 +20,7 @@ class App extends Component {
           'Content-Type': 'application/json'
         }})
     .then( (response) => {
-      this.setState({
-        bucketlists: response.data.bucketlists
-      });
+      this.props.setBuckets(response.data.bucketlists);
     })
     .catch(function (error) {
       console.error(error);
@@ -39,10 +31,10 @@ class App extends Component {
     var login_status = localStorage.getItem('login_status');
     var login_token = localStorage.getItem('login_token');
     if(login_status === '0' || login_token === ''){
-      this.setState({loginRequired: true});
+      this.props.setRedirect(true);
       return false;
     }else{
-      this.setState({loginRequired: false});
+      this.props.setRedirect(false);
       return true;
     }
 
@@ -59,17 +51,20 @@ class App extends Component {
   }
 
   handleAddBucketlist(bucketlist){
-    // console.log(bucketlist)
-    let bucketlists = this.state.bucketlists;
+    let bucketlists = this.props.app.bucketlists;
     bucketlists.push(bucketlist);
-    this.setState({bucketlists:bucketlists});
+    this.props.setBuckets(bucketlists);
+  }
+
+  handleSearchBucketlist(bucketlists){
+    this.props.setBuckets(bucketlists);
   }
 
   handleDeleteBucketlist(id){
-    let bucketlists = this.state.bucketlists;
+    let bucketlists = this.props.app.bucketlists;
     let index = bucketlists.findIndex(x => x.id === id);
     bucketlists.splice(index, 1)
-    this.setState({bucketlists:bucketlists});
+    this.props.setBuckets(bucketlists);
     axios.delete(
       'http://localhost:5555/api/v1/bucketlists/' + id,
       {headers:{'Authorization':'Bearer ' + localStorage.getItem('login_token')}})
@@ -83,10 +78,8 @@ class App extends Component {
   }
   
   render() {
-
-    const {loginRequired} = this.state
     
-    if(loginRequired){
+    if(this.props.app.loginRequired){
         return (<Redirect to="/login" />)
     }else{
 
@@ -96,9 +89,9 @@ class App extends Component {
           <Logout />
           <div style={{'width':'100%', 'paddingLeft':'10px', 'paddingRight':'18%'}}>
           <AddBucketlist addBucketlist={this.handleAddBucketlist.bind(this)}/>
-          <SearchBucketlists />
+          <SearchBucketlists searchBucketlist={this.handleSearchBucketlist.bind(this)} />
           </div>
-          <Bucketlists bucketlists={this.state.bucketlists} onDelete={this.handleDeleteBucketlist.bind(this)}/>
+          <Bucketlists bucketlists={this.props.app.bucketlists} onDelete={this.handleDeleteBucketlist.bind(this)}/>
         </div>
       );
 
@@ -108,4 +101,27 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapStateToProps = (state) => {
+    return {
+        app: state.appReducer
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        setBuckets: (buckets) => {
+            dispatch({
+                type: actionTypes.APP_BUCKETS,
+                payload: buckets
+            })
+        },
+        setRedirect: (redirect) => {
+            dispatch({
+                type: actionTypes.APP_REDIRECT,
+                payload: redirect
+            })
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)

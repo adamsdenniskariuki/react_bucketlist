@@ -6,7 +6,8 @@ import history from './history';
 import './App.css';
 import {
   BrowserRouter as Router,
-  Route
+  Route,
+  Switch
 } from 'react-router-dom'
 
 const Routes = () => {
@@ -14,11 +15,11 @@ const Routes = () => {
   return (
 
     <Router history={history}>
-      <div>
+      <Switch>
           <Route exact path="/" component={App}/>
           <Route path="/login" component={Login}/>
           <Route path="/register" component={Register}/>
-      </div>
+      </Switch>
     </Router>
 
   );

@@ -3,32 +3,16 @@ import { Link, Redirect } from 'react-router-dom'
 import { 
     Container,
     Header, 
-    Input, 
     Label, 
     Divider,
     Button, 
     Form } from 'semantic-ui-react'
+import {connect} from 'react-redux'
+import * as actionTypes from '../Actions/ActionTypes';
 
 var axios = require('axios');
 
 class RegisterContainer extends Component {
-
-  constructor(){
-    super();
-    this.state = {
-        user: {},
-        redirectToHome: false
-    }
-
-  }
-
-  componentWillMount(){
-
-  }
-
-  componentDidMount(){
-
-  }
 
   doRegister(user){
     axios.post('http://localhost:5555/api/v1/auth/register/', user)
@@ -36,12 +20,17 @@ class RegisterContainer extends Component {
         if(response.status === 200 && response.data['messages'] === "registration_success"){
             localStorage.setItem('login_status', 1);
             localStorage.setItem('login_token', response.data['user_token']);
-            this.setState({redirectToHome: true});
+            this.props.setUser({
+                "name": user['name'],
+                "email": user['email'],
+                "password": user['password']
+            });
+            this.props.setRedirect(true);
         }
         else{
             localStorage.setItem('login_status', 0);
             localStorage.setItem('login_token', '');
-            this.setState({redirectToHome: false});
+            this.props.setRedirect(false);
             alert(response.data['messages']);
         }
     })
@@ -54,14 +43,11 @@ class RegisterContainer extends Component {
       if(this.refs.email.value === '' || this.refs.password.value === '' || this.refs.name.value === ''){
             alert('Please fill in the name, email and password')
         }else{
-            this.setState({user: {
+            this.doRegister({
                 "name": this.refs.name.value,
                 "email": this.refs.email.value,
                 "password": this.refs.password.value
                 
-            }}, function(){
-                // console.log(this.state)
-                this.doRegister(this.state.user)
             })
         }
         e.preventDefault()
@@ -69,9 +55,7 @@ class RegisterContainer extends Component {
 
   render() {
 
-    const { redirectToHome } = this.state 
-
-    if(redirectToHome){
+    if(this.props.register.redirectToHome){
         return (<Redirect to="/" />)
     }
 
@@ -111,4 +95,27 @@ class RegisterContainer extends Component {
   }
 }
 
-export default RegisterContainer;
+const mapStateToProps = (state) => {
+    return {
+        register: state.registerReducer
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        setUser: (newuser) => {
+            dispatch({
+                type: actionTypes.REGISTER_USER,
+                payload: newuser
+            })
+        },
+        setRedirect: (redirect) => {
+            dispatch({
+                type: actionTypes.REGISTER_REDIRECT,
+                payload: redirect
+            })
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(RegisterContainer)

@@ -1,0 +1,8 @@
+export const LOGIN_USER = "LOGIN_USER"
+export const LOGIN_REDIRECT = "LOGIN_REDIRECT"
+export const APP_BUCKETS = "APP_BUCKETS"
+export const APP_REDIRECT = "APP_REDIRECT"
+export const REGISTER_USER = "REGISTER_USER"
+export const REGISTER_REDIRECT = "REGISTER_REDIRECT"
+export const NEW_BUCKET = "NEW_BUCKET"
+export const LIST_BUCKETS = "LIST_BUCKETS"
