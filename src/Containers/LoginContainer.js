@@ -27,7 +27,7 @@ class LoginContainer extends Component {
     }  
 
   doLogin(user){
-    axios.post('http://localhost:5555/api/v1/auth/login/', user, {
+    axios.post('https://flaskbucketlistapi.herokuapp.com/api/v1/auth/login/', user, {
         headers: {'Content-Type': "application/json"}})
     .then( (response) => {
         if(response.status === 200 && response.data['messages'] === "login_success"){

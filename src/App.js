@@ -42,7 +42,7 @@ class App extends Component {
 
   getBucketlistsFromAPI(){
     var login_token = localStorage.getItem('login_token');
-    axios.get('http://localhost:5555/api/v1/bucketlists?limit=3', {
+    axios.get('https://flaskbucketlistapi.herokuapp.com/api/v1/bucketlists?limit=3', {
         headers: {
           'Authorization': 'Bearer ' + login_token,
           'Content-Type': 'application/json'
@@ -105,7 +105,7 @@ class App extends Component {
     bucketlists.splice(index, 1)
     this.props.setBuckets(bucketlists);
     axios.delete(
-      'http://localhost:5555/api/v1/bucketlists/' + id,
+      'https://flaskbucketlistapi.herokuapp.com/api/v1/bucketlists/' + id,
       {headers:{'Authorization':'Bearer ' + localStorage.getItem('login_token')}})
       .then( (response) => {
         if(response.data['messages'] === 'delete_single_success'){

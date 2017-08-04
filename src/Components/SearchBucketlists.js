@@ -42,7 +42,7 @@ class SearchBucketlists extends Component {
 
         let limit = 0;
         this.refs.limit.value.replace(" ", "").length === 0 ? limit = 10 : limit = this.refs.limit.value
-        axios.get('http://localhost:5555/api/v1/bucketlists?q=' + this.refs.search.value + '&limit=' + limit,
+        axios.get('https://flaskbucketlistapi.herokuapp.com/api/v1/bucketlists?q=' + this.refs.search.value + '&limit=' + limit,
         {headers: {'Authorization':'Bearer ' + localStorage.getItem('login_token')}})
         .then( (response) => {
             if(response.data['messages'] === 'list_success'){

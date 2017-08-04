@@ -37,7 +37,7 @@ class AddBucketlist extends Component {
         if(this.refs.name.value === ''){
             this.addAlert('Error', 'The bucket list name is required', 'error');
         }else{
-            axios.post('http://localhost:5555/api/v1/bucketlists',
+            axios.post('http://flaskbucketlistapi.herokuapp.com/api/v1/bucketlists',
             {'name': this.refs.name.value},
             {headers: {'Authorization':'Bearer ' + localStorage.getItem('login_token')}})
             .then( (response) => {

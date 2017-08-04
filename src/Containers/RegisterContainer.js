@@ -27,7 +27,7 @@ class RegisterContainer extends Component {
     }    
 
   doRegister(user){
-    axios.post('http://localhost:5555/api/v1/auth/register/', user)
+    axios.post('https://flaskbucketlistapi.herokuapp.com/api/v1/auth/register/', user)
     .then((response) => {
         if(response.status === 200 && response.data['messages'] === "registration_success"){
             localStorage.setItem('login_status', 1);
