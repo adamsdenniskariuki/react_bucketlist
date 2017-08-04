@@ -42,7 +42,7 @@ class App extends Component {
 
   getBucketlistsFromAPI(){
     var login_token = localStorage.getItem('login_token');
-    axios.get('http://localhost:5555/api/v1/bucketlists/', {
+    axios.get('http://localhost:5555/api/v1/bucketlists?limit=3', {
         headers: {
           'Authorization': 'Bearer ' + login_token,
           'Content-Type': 'application/json'
@@ -51,8 +51,8 @@ class App extends Component {
       this.props.setBuckets(response.data.bucketlists);
       if(response.data['messages'].includes("Access Denied")){
         this.addAlert('Error', response.data['messages'], 'error');
-        var login_status = localStorage.setItem('login_status', '');
-      var login_token = localStorage.setItem('login_token', '');
+        localStorage.setItem('login_status', '');
+        localStorage.setItem('login_token', '');
         this.props.setRedirect(true);
       }
       
@@ -83,7 +83,7 @@ class App extends Component {
 
   handleAddBucketlist(bucketlist){
     let bucketlists = this.props.app.bucketlists;
-    bucketlists.splice(bucketlist);
+    bucketlists.splice(0,0, bucketlist);
     this.props.setBuckets(bucketlists);
   }
 
