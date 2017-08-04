@@ -8,8 +8,35 @@ import {connect} from 'react-redux'
 import * as actionTypes from '../Actions/ActionTypes';
 
 var axios = require('axios');
+var ReactToastr = require("react-toastr");
+var {ToastContainer} = ReactToastr;
+var ToastMessageFactory = React.createFactory(ReactToastr.ToastMessage.animation);
+
+const styles = {
+    container: {
+        'float':'right', 
+        'width': '40%', 
+        'margin':'0', 
+        'marginTop': '2%',
+        'padding': '10px', 
+        'border': 0
+    },
+    textFields: {
+        "width":"25%", 
+        "marginRight":"10px"
+    }
+}
 
 class SearchBucketlists extends Component {
+
+    addAlert = this.addAlert.bind(this);
+    addAlert(title, message, containerType){
+        if(containerType === 'success'){
+            this.refs.container.success(message, title, { timeOut: 3000, closeButton:true });
+        }else{
+            this.refs.container.error(message, title, { timeOut: 1000, closeButton:true });
+        }  
+    }
 
     handleSubmit(e){
 
@@ -19,10 +46,14 @@ class SearchBucketlists extends Component {
         {headers: {'Authorization':'Bearer ' + localStorage.getItem('login_token')}})
         .then( (response) => {
             if(response.data['messages'] === 'list_success'){
+                if(response.data.bucketlists.length === 0){
+                    this.addAlert('Error', this.refs.search.value + " not found", 'error');
+                    return false
+                }
                 this.props.setSearchBuckets(response.data.bucketlists)
                 this.props.searchBucketlist(this.props.bucket.bucketlists)
             }else{
-                alert(response.data['messages'])
+                this.addAlert('Error', response.data['messages'], 'error');
             }
         })
         
@@ -32,13 +63,17 @@ class SearchBucketlists extends Component {
   render() {
     return (
       <div>
-        <Container fluid style={
-            {'float':'right', 'width': '49%', 'margin':'0', 'marginTop': '5%', 'padding': '10px', 'border': '1px solid #e8e8e8'}}>
+        <div>
+            <ToastContainer ref="container"
+                            toastMessageFactory={ToastMessageFactory}
+                            className="toast-top-right" />
+        </div>
+        <Container fluid style={styles.container}>
         <Header as="h3">Search Bucket lists</Header>
         <Form onSubmit={this.handleSubmit.bind(this)}>
             <div>
-                 <input onKeyUp={this.handleSubmit.bind(this)} style={{"width":"30%", "marginRight":"10px"}} type="text" ref="search" placeholder="Search..." />
-                 <input onKeyUp={this.handleSubmit.bind(this)} style={{"width":"30%", "marginRight":"10px"}} type="text" ref="limit" placeholder="Limit..."  />
+                 <input onKeyUp={this.handleSubmit.bind(this)} style={styles.textFields} type="text" ref="search" placeholder="Search..." />
+                 <input onKeyUp={this.handleSubmit.bind(this)} style={styles.textFields} type="text" ref="limit" placeholder="Limit..."  />
                  <Button primary type="submit">Submit</Button>
             </div><br />
         </Form>

@@ -3,6 +3,22 @@ import { Link } from 'react-router-dom'
 import {connect} from 'react-redux'
 import * as actionTypes from '../Actions/ActionTypes';
 
+const styles = {
+    logout: {
+        'display': 'block',
+        'color': 'white',
+        'fontWeight': 'bold',
+        'width': '8%',
+        'float': 'right',
+        'marginRight': '17%',
+        'backgroundColor': '#DD5C5C',
+        'padding': '10px',
+        'borderRadius': '5px',
+        'textAlign': 'center'
+        
+    }
+}
+
 class LogOut extends Component {
 
 
@@ -18,7 +34,7 @@ class LogOut extends Component {
   render() {
     
     return (
-        <Link onClick={this.logoutUser} to="/login">Log Out</Link>
+        <Link style={styles.logout} onClick={this.logoutUser} to="/login">Log Out</Link>
     )
 
   }

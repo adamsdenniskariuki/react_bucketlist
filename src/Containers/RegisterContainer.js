@@ -11,8 +11,20 @@ import {connect} from 'react-redux'
 import * as actionTypes from '../Actions/ActionTypes';
 
 var axios = require('axios');
+var ReactToastr = require("react-toastr");
+var {ToastContainer} = ReactToastr;
+var ToastMessageFactory = React.createFactory(ReactToastr.ToastMessage.animation);
 
 class RegisterContainer extends Component {
+
+  addAlert = this.addAlert.bind(this);
+    addAlert(title, message, containerType){
+        if(containerType === 'success'){
+            this.refs.container.success(message, title, { timeOut: 1000, closeButton:true });
+        }else{
+            this.refs.container.error(message, title, { timeOut: 1000, closeButton:true });
+        }  
+    }    
 
   doRegister(user){
     axios.post('http://localhost:5555/api/v1/auth/register/', user)
@@ -31,17 +43,17 @@ class RegisterContainer extends Component {
             localStorage.setItem('login_status', 0);
             localStorage.setItem('login_token', '');
             this.props.setRedirect(false);
-            alert(response.data['messages']);
+            this.addAlert('Error', response.data['messages'], 'error');
         }
     })
     .catch(function (error) {
-      console.log(error);
+      this.addAlert('Error', error, 'error');
     });
   }
 
   handleRegister(e){
       if(this.refs.email.value === '' || this.refs.password.value === '' || this.refs.name.value === ''){
-            alert('Please fill in the name, email and password')
+            this.addAlert('Error', 'Please fill in the name, email and password', 'error');
         }else{
             this.doRegister({
                 "name": this.refs.name.value,
@@ -67,6 +79,11 @@ class RegisterContainer extends Component {
 
     return (
       <div className="Register">
+          <div>
+              <ToastContainer ref="container"
+                              toastMessageFactory={ToastMessageFactory}
+                              className="toast-top-right" />
+          </div>
           <Container fluid style={
               {'width': '40%', 'marginTop': '5%', 'padding': '50px', 'border': '1px solid #e8e8e8'}}>
             <Header as="h3">Register</Header>
